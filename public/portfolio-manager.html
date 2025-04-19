@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciador de Portfólio | Impacto Visual</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #0a0f1c;
+            --secondary-color: #4f46e5;
+            --accent-color: #06b6d4;
+            --text-color: #ffffff;
+            --text-secondary: #94a3b8;
+            --dark-color: #111827;
+            --light-color: #f3f4f6;
+            --card-border-radius: 1.25rem;
+        }
+
+        body {
+            background-color: #f5f5f9;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .sidebar {
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            height: 100vh;
+            position: fixed;
+            width: 240px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .sidebar-logo {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-logo i {
+            color: var(--secondary-color);
+            margin-right: 10px;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s;
+            border-radius: 0;
+            margin: 2px 0;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--text-color);
+        }
+
+        .nav-link i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .main-content {
+            margin-left: 240px;
+            padding: 20px;
+        }
+
+        .top-navbar {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-profile img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-left: 10px;
+        }
+
+        .content-card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .video-card {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+            position: relative;
+            background-color: white;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .video-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .video-thumbnail {
+            position: relative;
+            padding-top: 56.25%; /* 16:9 aspect ratio */
+            overflow: hidden;
+            background-color: #eee;
+        }
+
+        .video-thumbnail img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .video-card:hover .video-thumbnail img {
+            transform: scale(1.05);
+        }
+
+        .video-play-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background-color: rgba(79, 70, 229, 0.8);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            z-index: 1;
+            opacity: 0.9;
+            transition: all 0.3s ease;
+        }
+
+        .video-card:hover .video-play-icon {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+
+        .video-info {
+            padding: 15px;
+        }
+
+        .video-info h5 {
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .video-info p {
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+        }
+
+        .video-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #6c757d;
+            font-size: 0.8rem;
+        }
+
+        .video-category {
+            padding: 3px 10px;
+            background-color: rgba(79, 70, 229, 0.1);
+            color: var(--secondary-color);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            transition: all 0.3s ease;
+            background-color: #f8f9fa;
+            border: none;
+        }
+
+        .action-btn:hover {
+            background-color: rgba(79, 70, 229, 0.1);
+            color: var(--secondary-color);
+        }
+
+        .edit-btn:hover {
+            background-color: rgba(6, 182, 212, 0.1);
+            color: var(--accent-color);
+        }
+
+        .delete-btn:hover {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+
+        .upload-area {
+            border: 2px dashed #e2e8f0;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            background-color: #f8fafc;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .upload-area:hover {
+            border-color: var(--secondary-color);
+            background-color: rgba(79, 70, 229, 0.05);
+        }
+
+        .upload-icon {
+            font-size: 40px;
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+        }
+
+        .upload-text h4 {
+            color: var(--dark-color);
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+        }
+
+        .upload-text p {
+            color: #6c757d;
+            margin-bottom: 15px;
+        }
+
+        .input-file {
+            display: none;
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+
+        .filter-tabs::-webkit-scrollbar {
+            height: 5px;
+        }
+
+        .filter-tabs::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .filter-tabs::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 10px;
+        }
+
+        .filter-tabs::-webkit-scrollbar-thumb:hover {
+            background: #c1c1c1;
+        }
+
+        .filter-tab {
+            padding: 8px 20px;
+            background-color: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 20px;
+            color: #6c757d;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .filter-tab.active, .filter-tab:hover {
+            background-color: var(--secondary-color);
+            color: white;
+            border-color: var(--secondary-color);
+        }
+
+        .search-box {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 20px;
+            padding-left: 40px;
+            border: 1px solid #e5e7eb;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-box input:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+            outline: none;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+        }
+
+        .no-videos {
+            text-align: center;
+            padding: 50px;
+            color: #6c757d;
+        }
+
+        .no-videos i {
+            font-size: 60px;
+            margin-bottom: 20px;
+            color: #d1d5db;
+        }
+
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .pagination {
+            display: flex;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            gap: 5px;
+        }
+
+        .page-item {
+            display: inline-block;
+        }
+
+        .page-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 35px;
+            height: 35px;
+            border-radius: 8px;
+            background-color: white;
+            color: #6c757d;
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .page-link:hover, .page-item.active .page-link {
+            background-color: var(--secondary-color);
+            color: white;
+            border-color: var(--secondary-color);
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <i class="bi bi-box"></i>
+            <span>Impacto Visual</span>
+        </div>
+        <ul class="nav flex-column mt-3">
+            <li class="nav-item">
+                <a class="nav-link" href="admin-panel.html">
+                    <i class="bi bi-grid-1x2-fill"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <i class="bi bi-calendar"></i>
+                    <span>Calendário</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <i class="bi bi-bar-chart-fill"></i>
+                    <span>Relatórios</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <i class="bi bi-people-fill"></i>
+                    <span>Contatos</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="portfolio-manager.html">
+                    <i class="bi bi-collection-play"></i>
+                    <span>Portfólio</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <i class="bi bi-journal-richtext"></i>
+                    <span>Serviços</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <i class="bi bi-person-fill-gear"></i>
+                    <span>Configurações</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="mt-auto p-3 d-flex justify-content-center" style="position: absolute; bottom: 0; width: 100%;">
+            <button class="btn btn-sm btn-outline-light">
+                <i class="bi bi-plus-circle"></i> Novo Projeto
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Navigation -->
+        <div class="top-navbar">
+            <div class="d-flex align-items-center">
+                <button class="btn btn-sm" id="menu-toggle">
+                    <i class="bi bi-list"></i>
+                </button>
+                <div class="ms-3">
+                    <h4 class="mb-0">Gerenciador de Portfólio</h4>
+                </div>
+            </div>
+            <div class="user-profile">
+                <div class="dropdown">
+                    <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-bell"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            3
+                        </span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+                        <li><a class="dropdown-item" href="#">Novo contato</a></li>
+                        <li><a class="dropdown-item" href="#">Projeto finalizado</a></li>
+                        <li><a class="dropdown-item" href="#">Novo depoimento</a></li>
+                    </ul>
+                </div>
+                <div class="dropdown ms-3">
+                    <button class="btn dropdown-toggle d-flex align-items-center" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span class="me-2">Marcus White</span>
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User">
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>Perfil</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>Configurações</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="admin-login.html"><i class="bi bi-box-arrow-right me-2"></i>Sair</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upload Area -->
+        <div class="content-card">
+            <h5 class="mb-4">Adicionar Novo Projeto</h5>
+            <input type="file" id="file-upload" class="input-file" accept="video/*">
+            <label for="file-upload" class="upload-area">
+                <div class="upload-icon">
+                    <i class="bi bi-cloud-arrow-up"></i>
+                </div>
+                <div class="upload-text">
+                    <h4>Arraste e solte arquivos aqui</h4>
+                    <p>Ou clique para selecionar arquivos</p>
+                    <button class="btn btn-primary">Escolher arquivo</button>
+                </div>
+            </label>
+        </div>
+
+        <!-- Filter and Search Section -->
+        <div class="content-card">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 class="mb-0">Projetos</h5>
+                <div class="d-flex gap-2">
+                    <div class="dropdown">
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-sort-down me-1"></i> Ordenar
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="sortDropdown">
+                            <li><a class="dropdown-item" href="#">Mais recentes</a></li>
+                            <li><a class="dropdown-item" href="#">Mais antigos</a></li>
+                            <li><a class="dropdown-item" href="#">Alfabético (A-Z)</a></li>
+                            <li><a class="dropdown-item" href="#">Alfabético (Z-A)</a></li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-primary">
+                        <i class="bi bi-plus-lg me-1"></i> Adicionar Projeto
+                    </button>
+                </div>
+            </div>
+
+            <div class="filter-tabs">
+                <div class="filter-tab active">Todos</div>
+                <div class="filter-tab">Institucionais</div>
+                <div class="filter-tab">Comerciais</div>
+                <div class="filter-tab">Eventos</div>
+                <div class="filter-tab">Redes Sociais</div>
+                <div class="filter-tab">Drone</div>
+                <div class="filter-tab">Animações</div>
+            </div>
+
+            <div class="search-box">
+                <i class="bi bi-search search-icon"></i>
+                <input type="text" placeholder="Pesquisar projetos...">
+            </div>
+
+            <!-- Video Grid -->
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="video-card">
+                        <div class="video-thumbnail">
+                            <img src="https://i.ytimg.com/vi/vxgOeCZSY4E/maxresdefault.jpg" alt="Video Thumbnail">
+                            <div class="video-play-icon">
+                                <i class="bi bi-play-fill"></i>
+                            </div>
+                        </div>
+                        <div class="video-info">
+                            <h5>Vídeo Institucional Empresa XYZ</h5>
+                            <p>Apresentação institucional para a empresa XYZ, destacando seus valores e missão.</p>
+                            <div class="video-meta">
+                                <span class="video-category">Institucional</span>
+                                <div class="action-buttons">
+                                    <button class="action-btn edit-btn" title="Editar">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button class="action-btn" title="Visualizar">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                    <button class="action-btn delete-btn" title="Excluir">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="video-card">
+                        <div class="video-thumbnail">
+                            <img src="https://i.ytimg.com/vi/Kt5rE0JnlUA/maxresdefault.jpg" alt="Video Thumbnail">
+                            <div class="video-play-icon">
+                                <i class="bi bi-play-fill"></i>
+                            </div>
+                        </div>
+                        <div class="video-info">
+                            <h5>Campanha de Marketing Digital</h5>
+                            <p>Vídeo promocional para campanha de marketing digital em redes sociais.</p>
+                            <div class="video-meta">
+                                <span class="video-category">Redes Sociais</span>
+                                <div class="action-buttons">
+                                    <button class="action-btn edit-btn" title="Editar">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button class="action-btn" title="Visualizar">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                    <button class="action-btn delete-btn" title="Excluir">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="video-card">
+                        <div class="video-thumbnail">
+                            <img src="https://i.ytimg.com/vi/IS1XHAJVURI/maxresdefault.jpg" alt="Video Thumbnail">
+                            <div class="video-play-icon">
+                                <i class="bi bi-play-fill"></i>
+                            </div>
+                        </div>
+                        <div class="video-info">
+                            <h5>Cobertura de Evento Corporativo</h5>
+                            <p>Cobertura completa do evento anual da empresa ABC, incluindo palestras e networking.</p>
+                            <div class="video-meta">
+                                <span class="video-category">Eventos</span>
+                                <div class="action-buttons">
+                                    <button class="action-btn edit-btn" title="Editar">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button class="action-btn" title="Visualizar">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                    <button class="action-btn delete-btn" title="Excluir">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="video-card">
+                        <div class="video-thumbnail">
+                            <img src="https://i.ytimg.com/vi/SFwKD2V0JX8/maxresdefault.jpg" alt="Video Thumbnail">
+                            <div class="video-play-icon">
+                                <i class="bi bi-play-fill"></i>
+                            </div>
+                        </div>
+                        <div class="video-info">
+                            <h5>Animação Explicativa - Serviços</h5>
+                            <p>Animação explicando os serviços oferecidos pela empresa Delta em um formato dinâmico.</p>
+                            <div class="video-meta">
+                                <span class="video-category">Animações</span>
+                                <div class="action-buttons">
+                                    <button class="action-btn edit-btn" title="Editar">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button class="action-btn" title="Visualizar">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                    <button class="action-btn delete-btn" title="Excluir">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="video-card">
+                        <div class="video-thumbnail">
+                            <img src="https://i.ytimg.com/vi/kD3zRQGbPiM/maxresdefault.jpg" alt="Video Thumbnail">
+                            <div class="video-play-icon">
+                                <i class="bi bi-play-fill"></i>
+                            </div>
+                        </div>
+                        <div class="video-info">
+                            <h5>Comercial - Produto Inovador</h5>
+                            <p>Comercial apresentando o novo produto inovador da marca XYZ para TV e internet.</p>
+                            <div class="video-meta">
+                                <span class="video-category">Comerciais</span>
+                                <div class="action-buttons">
+                                    <button class="action-btn edit-btn" title="Editar">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button class="action-btn" title="Visualizar">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                    <button class="action-btn delete-btn" title="Excluir">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="video-card">
+                        <div class="video-thumbnail">
+                            <img src="https://i.ytimg.com/vi/HCDVN7DCzYE/maxresdefault.jpg" alt="Video Thumbnail">
+                            <div class="video-play-icon">
+                                <i class="bi bi-play-fill"></i>
+                            </div>
+                        </div>
+                        <div class="video-info">
+                            <h5>Filmagem Aérea - Empreendimento</h5>
+                            <p>Captação aérea com drone do novo empreendimento imobiliário da construtora ABC.</p>
+                            <div class="video-meta">
+                                <span class="video-category">Drone</span>
+                                <div class="action-buttons">
+                                    <button class="action-btn edit-btn" title="Editar">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button class="action-btn" title="Visualizar">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                    <button class="action-btn delete-btn" title="Excluir">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination-container">
+                <ul class="pagination">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" aria-label="Previous">
+                            <i class="bi bi-chevron-left"></i>
+                        </a>
+                    </li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Next">
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Toggle Menu
+        document.getElementById('menu-toggle').addEventListener('click', function() {
+            document.querySelector('.sidebar').classList.toggle('d-none');
+            document.querySelector('.main-content').classList.toggle('ml-0');
+        });
+
+        // Filter Tabs
+        const filterTabs = document.querySelectorAll('.filter-tab');
+        filterTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                filterTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html> 
