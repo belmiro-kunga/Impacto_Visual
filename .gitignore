@@ -2,6 +2,7 @@
 node_modules/
 npm-debug.log
 yarn-error.log
+pnpm-debug.log
 
 # Laravel 4 specific
 bootstrap/compiled.php
@@ -10,14 +11,53 @@ app/storage/
 # Laravel 5 & Lumen specific
 public/storage
 public/hot
+public/build
 
 # Laravel 5 & Lumen specific with changed public path
 public_html/storage
 public_html/hot
+public_html/build
 
 storage/*.key
 .env
+.env.backup
+.env.production
+.phpunit.result.cache
 Homestead.yaml
 Homestead.json
 /.vagrant
-.phpunit.result.cache
+
+# IDE & Editors
+/.fleet
+/.idea
+/.vscode
+*.sublime-project
+*.sublime-workspace
+
+# Logs and databases
+*.log
+*.sql
+*.sqlite
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Build files
+/build/
+dist/
+
+# Laravel Vapor
+.vapor/
+.env.vapor
+
+# PHPUnit
+.phpunit.cache
+
+# Composer
+composer.phar
